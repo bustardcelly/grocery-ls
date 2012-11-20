@@ -1,0 +1,50 @@
+<!DOCTYPE html">
+<html>
+  <head>
+    <title>grocery-ls Spec Runner</title>
+    <link rel="stylesheet" type="text/css" href="lib/jasmine-1.2.0/jasmine.css">
+
+    <script src="../../lib/require-2.1.1.min.js"></script>
+    <script src="lib/jasmine-1.2.0/jasmine.js"></script>
+    <script src="lib/jasmine-1.2.0/jasmine-html.js"></script>
+    <script src="lib/jasmine.async.min.js"></script>
+    <script src="lib/sinon-1.5.0.js"></script>
+    
+    <script>
+      (function( window, require ) {
+
+        // No beforeAll/afterAll support in jasmine
+        // [monkeypatch] https://github.com/pivotal/jasmine/pull/56
+        window.beforeAll = function(fn) {
+          it('[beforeAll]', fn);
+        };
+        window.afterAll = function(fn) {
+          it('[afterAll', fn);
+        };
+
+        require.config({
+          baseUrl: "../..",
+          paths: {
+            "spec": "./test/jasmine/spec",
+            "script": "./script",
+            "jquery": "./lib/jquery-1.8.3.min.js"
+          }
+        });
+
+        require( ['spec/newitem.spec.js'], function() {
+          
+          var jasmineEnv = jasmine.getEnv(),
+              htmlReporter = new jasmine.HtmlReporter();
+              
+          jasmineEnv.updateInterval = 1000;
+          jasmineEnv.addReporter(htmlReporter);
+          jasmineEnv.execute();
+
+        });  
+
+      }(window, requirejs));
+    </script>
+
+</head>
+<body></body>
+</html>

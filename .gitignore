@@ -1,0 +1,4 @@
+*.sublime-*
+test/*.txt
+test/jasmine/spec/ignore.*
+.DS_Store
