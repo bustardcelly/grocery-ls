@@ -16,7 +16,7 @@ define( function() {
             return service.addItem(this.editableItem);
           }
         },
-        addItemStub
+        addItemStub,
         async = new AsyncSpec(this);
 
     beforeEach( function() {
@@ -35,7 +35,7 @@ define( function() {
     it('should create a new editable item', function() {
       var editableItem = listController.addEditableItemToList();
       expect(listController.editableItem).not.toBeUndefined();
-
+      expect(service.addItem.called).toBe(false);
     });
 
     async.it('should save new item last created', function(done) {
