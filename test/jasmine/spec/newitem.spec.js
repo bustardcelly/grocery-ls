@@ -9,7 +9,10 @@ define( ['script/controller/list-controller'], function(listController) {
     });
 
     it('should expose the editableItem upon creation', function() {
-      expect(listController.editableItem).not.toBeUndefined();
+      var createdItem = listController.editableItem;
+      expect(createdItem).not.toBeUndefined();
+      expect(typeof createdItem.name).toBe('string');
+      expect(createdItem.name.length).toBe(0);
     });
 
     afterEach( function() {
