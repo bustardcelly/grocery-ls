@@ -1,5 +1,30 @@
 define(['jquery', 'script/model/grocery-ls-item'], function($, itemModel) {
 
+
+  function findItemByID( itemID, items ) {
+    var index = items.length,
+        item;
+    while( --index > -1 ) {
+      item = items[index];
+      if( item.id === itemID ) {
+        return item;
+      }
+    }
+    return undefined;
+  }
+
+  function findRendererByItem( item, renderers ) {
+    var index = renderers.length,
+        renderer;
+    while( --index > -1 ) {
+      renderer = renderers[index];
+      if( $(renderer).data('gls-item') === item ) {
+        return renderer;
+      }
+    }
+    return undefined;
+  }
+
   var $view,
       $item,
       $itemList,
@@ -49,7 +74,7 @@ define(['jquery', 'script/model/grocery-ls-item'], function($, itemModel) {
           this.editableItem.name = name;
         },
         saveFocusedItem: function() {
-          var $list = findItemList();
+          var $list = findItemList(),
               $itemFragment = $(itemFragment);
           
           $item.remove();
@@ -57,9 +82,31 @@ define(['jquery', 'script/model/grocery-ls-item'], function($, itemModel) {
             $itemFragment.append('p').text(this.editableItem.name);
             $itemFragment.data('gls-item', this.editableItem);
             $list.append($itemFragment);
+            $itemFragment.on('click', (function(controller, model) {
+              return function(event) {
+                if( model.marked ) {
+                  controller.unmarkOffItem(model.id);
+                }
+                else {
+                  controller.markOffItem(model.id);
+                }
+              };
+            }(this, this.editableItem)));
             this.itemList.push(this.editableItem);
           }
           this.editableItem = undefined;
+        },
+        markOffItem: function(itemID) {
+          var item = findItemByID(itemID, this.itemList),
+              renderer = findRendererByItem(item, $itemList.children());
+          item.marked = true;
+          $(renderer).css('text-decoration', 'line-through');
+        },
+        unmarkOffItem: function(itemID) {
+          var item = findItemByID(itemID, this.itemList),
+              renderer = findRendererByItem(item, $itemList.children());
+          item.marked = false;
+          $(renderer).css('text-decoration', 'none');
         }
       };
 

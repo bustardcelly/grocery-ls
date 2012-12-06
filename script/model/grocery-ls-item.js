@@ -11,6 +11,11 @@ define(function() {
         value: '',
         writable: true,
         enumerable: true
+      },
+      "marked": {
+        value: false,
+        writable: true,
+        enumerable: true
       }
     };
   };
