@@ -18,7 +18,7 @@ define(['jquery', 'script/model/grocery-ls-item'], function($, modelFactory) {
         var newModel = modelFactory.create();
         expect(model).not.toBeUndefined();
         expect(newModel).not.toBeUndefined();
-        expect(model).not.toBe(newModel);
+        expect(model).not.toEqual(newModel);
       });
 
       async.it('should auto generate unique ids on models', function(done) {

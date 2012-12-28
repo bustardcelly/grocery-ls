@@ -1,7 +1,7 @@
 define(['jquery'], function($) {
   
   function createStateEvent(oldState, newState) {
-    var event = new $.Event('state-change');
+    var event = $.Event('state-change');
     event.oldState = oldState;
     event.newState = newState;
     return event;

@@ -22,7 +22,7 @@ define(['jquery', 'script/model/grocery-ls-item', 'script/controller/list-item-c
       it('should return unique instances of list-item-controllers', function() {
         var nextController = itemControllerFactory.create(parentNode, model);
         nextController.state = 'testing';
-        expect(nextController).not.toBe(newController);
+        expect(nextController).not.toEqual(newController);
         expect(nextController.state).not.toBe(newController.state);
       });
 
