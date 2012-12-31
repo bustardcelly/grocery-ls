@@ -1,114 +1,43 @@
-define(['jquery', 'script/model/grocery-ls-item'], function($, itemModel) {
+define(['jquery', 'script/controller/list-item-controller', 'script/collection/collection', 'script/model/grocery-ls-item'], 
+        function($, itemControllerFactory, collectionFactory, modelFactory) {
 
-
-  function findItemByID( itemID, items ) {
-    var index = items.length,
-        item;
-    while( --index > -1 ) {
-      item = items[index];
-      if( item.id === itemID ) {
-        return item;
-      }
-    }
-    return undefined;
-  }
-
-  function findRendererByItem( item, renderers ) {
-    var index = renderers.length,
-        renderer;
-    while( --index > -1 ) {
-      renderer = renderers[index];
-      if( $(renderer).data('gls-item') === item ) {
-        return renderer;
-      }
-    }
-    return undefined;
-  }
-
-  var $view,
-      $item,
-      $itemList,
-      itemFragment          = '<li class="grocery-item" />',
-      editableItemFragment  = '<li class="editable-grocery-item">' +
-                                '<input id="editableItem" name="editableItem" ' +
-                                  'class="editable-item" placeholder="Enter item name...">' + 
-                                '</input>' +
-                              '</li>',
-      findItemList = function() {
-        if( typeof $itemList === 'undefined' ) {
-          $itemList = $('.grocery-list', $view);
-        }
-        return $itemList;
-      },
+  var collection = collectionFactory.create(),
       listController = {
-        itemList: [],
-        editableItem: undefined,
-        setView: function(value) {
-          var controller = this;
-          $view = $(value);
-          $('#add-item-button', this.$view).on( 'click', function(event) {
-            controller.createNewItem();
-          });
+        $view: undefined,
+        getItemList: function() {
+          return collection;
         },
         createNewItem: function() {
-          var $list = findItemList(),
-              $input,
-              controller = this;
-
-          this.editableItem = itemModel.create();
-          $item = $(editableItemFragment);
-          $input = $('input', $item);
-          $input.first().bind( 'blur', function(event) {
-            var $this = $(this);
-
-            $this.unbind('blur');
-            controller.editFocusedItem( $this.val() );
-            controller.saveFocusedItem();
-          });
-
-          $item.data('gls-item', this.editableItem);
-          $list.append($item);
-          $input.first().focus();
+          var model = modelFactory.create();
+          collection.addItem(model);
+          return model;
         },
-        editFocusedItem: function(name) {
-          this.editableItem.name = name;
-        },
-        saveFocusedItem: function() {
-          var $list = findItemList(),
-              $itemFragment = $(itemFragment);
-          
-          $item.remove();
-          if( this.editableItem.name.length > 0 ) {
-            $itemFragment.append('p').text(this.editableItem.name);
-            $itemFragment.data('gls-item', this.editableItem);
-            $list.append($itemFragment);
-            $itemFragment.on('click', (function(controller, model) {
-              return function(event) {
-                if( model.marked ) {
-                  controller.unmarkOffItem(model.id);
-                }
-                else {
-                  controller.markOffItem(model.id);
-                }
-              };
-            }(this, this.editableItem)));
-            this.itemList.push(this.editableItem);
-          }
-          this.editableItem = undefined;
-        },
-        markOffItem: function(itemID) {
-          var item = findItemByID(itemID, this.itemList),
-              renderer = findRendererByItem(item, $itemList.children());
-          item.marked = true;
-          $(renderer).css('text-decoration', 'line-through');
-        },
-        unmarkOffItem: function(itemID) {
-          var item = findItemByID(itemID, this.itemList),
-              renderer = findRendererByItem(item, $itemList.children());
-          item.marked = false;
-          $(renderer).css('text-decoration', 'none');
+        setView: function(view) {
+          this.$view = (view instanceof $) ? view : $(view);
         }
       };
+
+  (function assignCollectionHandlers($collection) {
+
+    var EventKindEnum = collectionFactory.collectionEventKind;
+    $collection.on('collection-change', function(event) {
+      switch( event.kind ) {
+        case EventKindEnum.ADD:
+          var model = event.items.shift(),
+              $itemView = $('<li>'),
+              itemController = itemControllerFactory.create($itemView, model);
+
+          $itemView.appendTo(listController.$view);
+          itemController.state = itemControllerFactory.state.EDITABLE;
+          break;
+        case EventKindEnum.REMOVE:
+          break;
+        case EventKindEnum.RESET:
+          break;
+      }
+    });
+    
+  }($(collection)));
 
   return listController;
   

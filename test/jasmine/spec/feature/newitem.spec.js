@@ -1,27 +1,11 @@
-define(['jquery', 'script/controller/list-controller', 'script/controller/list-item-controller', 
-        'script/collection/collection', 'script/model/grocery-ls-item'], 
-        function($, listController, itemControllerFactory, collectionFactory, modelFactory) {
+define(['jquery', 'script/controller/list-controller'], 
+        function($, listController) {
   
   describe('New item creation from listController.createNewItem()', function() {
 
-    var newModel,
-        newItemController,
-        listControllerStub,
-        $listView = $('<ul/>'),
-        itemCollection = collectionFactory.create();
+    var $listView = $('<ul/>');
 
     beforeEach( function() {
-      var $itemView = $('<li>');
-
-      newModel = modelFactory.create();
-      newItemController = itemControllerFactory.create($itemView, newModel);
-
-      listControllerStub = sinon.stub(listController, 'createNewItem', function() {
-        listController.getItemList().addItem(newModel);
-        $itemView.appendTo($listView);
-        return newModel;
-      });
-      listController.getItemList = sinon.stub().returns(itemCollection);
       listController.setView($listView);
     });
 
@@ -48,10 +32,6 @@ define(['jquery', 'script/controller/list-controller', 'script/controller/list-i
 
     afterEach( function() {
       $listView.empty();
-      newModel = undefined;
-      newItemController = undefined;
-      itemCollection.removeAll();
-      listController.createNewItem.restore();
     });
 
   });
