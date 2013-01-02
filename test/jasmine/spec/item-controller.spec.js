@@ -22,8 +22,8 @@ define(['jquery', 'script/model/grocery-ls-item', 'script/controller/list-item-c
       it('should return unique instances of list-item-controllers', function() {
         var nextController = itemControllerFactory.create(parentNode, model);
         nextController.state = 'testing';
-        expect(nextController).not.toEqual(newController);
-        expect(nextController.state).not.toBe(newController.state);
+        expect(nextController).not.toBe(newController);
+        expect(nextController.state).not.toEqual(newController.state);
       });
 
     });
@@ -51,9 +51,9 @@ define(['jquery', 'script/model/grocery-ls-item', 'script/controller/list-item-c
           $(newController).on('state-change', function(event) {
             $(newController).off('state-change');
 
-            expect(event.oldState).toBe(previousState);
-            expect(event.newState).toBe(newState);
-            expect(newController.state).toBe(newState);
+            expect(event.oldState).toEqual(previousState);
+            expect(event.newState).toEqual(newState);
+            expect(newController.state).toEqual(newState);
             done();
           });
           newController.state = newState;

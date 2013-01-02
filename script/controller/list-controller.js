@@ -20,6 +20,7 @@ define(['jquery', 'script/controller/list-item-controller', 'script/collection/c
   (function assignCollectionHandlers($collection) {
 
     var EventKindEnum = collectionFactory.collectionEventKind;
+
     $collection.on('collection-change', function(event) {
       switch( event.kind ) {
         case EventKindEnum.ADD:
