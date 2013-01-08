@@ -86,6 +86,13 @@ define(['jquery'], function($) {
           // default to undeditable state.
           this.state = stateEnum.UNEDITABLE;
           return this;
+        },
+        // NEW >
+        dispose: function() {
+          this.$uneditableView.off('click');
+          $('input', this.$editableView).off('blur');
+          $(this).off('state-change');
+          $(this.model).off('property-change');
         }
       };
 

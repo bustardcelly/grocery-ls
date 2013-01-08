@@ -1,5 +1,5 @@
-define(['jquery', 'script/controller/list-controller'], 
-        function($, listController) {
+define(['jquery', 'script/controller/list-controller', 'script/controller/list-item-controller'], 
+        function($, listController, itemControllerFactory) {
   
   describe('New item creation from listController.createNewItem()', function() {
 
@@ -28,6 +28,16 @@ define(['jquery', 'script/controller/list-controller'],
     it('should add new item controller to view', function() {
       listController.createNewItem();
       expect($listView.children().length).toEqual(1);
+    });
+
+    it('should enable associated item renderer as editable', function() {
+      var newItem = listController.createNewItem(),
+          itemRenderer = listController.getRendererFromItem(newItem);
+
+        expect(itemRenderer).not.toBeUndefined();
+        expect(itemRenderer.model).toBe(newItem);
+        expect(itemRenderer.state).toEqual(itemControllerFactory.state.EDITABLE);
+        expect($listView.children()[0]).toBe(itemRenderer.parentView.get(0));
     });
 
     afterEach( function() {

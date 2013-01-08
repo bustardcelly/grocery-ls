@@ -1,6 +1,6 @@
 define(['jquery', 'script/model/grocery-ls-item'], function($, modelFactory) {
   
-  describe('Grocery grocery-ls-item model', function() {
+  describe('Grocery List grocery-ls-item model', function() {
 
     var model,
         name = 'grapes',

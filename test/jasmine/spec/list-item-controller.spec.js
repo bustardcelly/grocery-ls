@@ -1,7 +1,7 @@
 define(['jquery', 'script/model/grocery-ls-item', 'script/controller/list-item-controller'], 
           function($, modelFactory, itemControllerFactory) {
 
-  describe('Grocery list-item-controller', function() {
+  describe('Grocery List list-item-controller', function() {
 
     var model,
         parentNode = $('<li>'),
