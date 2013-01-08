@@ -2,10 +2,20 @@ define(['jquery', 'script/controller/list-item-controller', 'script/collection/c
         function($, itemControllerFactory, collectionFactory, modelFactory) {
 
   var collection = collectionFactory.create(),
+      rendererList = collectionFactory.create(),
       listController = {
         $view: undefined,
         getItemList: function() {
           return collection;
+        },
+        getRendererFromItem: function(item) {
+          var i = rendererList.itemLength();
+          while( --i > -1 ) {
+            if(rendererList.getItemAt(i).model === item) {
+              return rendererList.getItemAt(i);
+            }
+            return undefined;
+          }
         },
         createNewItem: function() {
           var model = modelFactory.create();
@@ -17,18 +27,23 @@ define(['jquery', 'script/controller/list-item-controller', 'script/collection/c
         }
       };
 
-  (function assignCollectionHandlers($collection) {
+  (function assignCollectionHandlers($collection, $rendererList) {
 
-    var EventKindEnum = collectionFactory.collectionEventKind;
+    var EventKindEnum = collectionFactory.collectionEventKind,
+        isValidValue = function(value) {
+          return value && (value.hasOwnProperty('length') && value.length > 0);
+        };
 
     $collection.on('collection-change', function(event) {
+      var model, itemController, $itemView;
       switch( event.kind ) {
         case EventKindEnum.ADD:
-          var model = event.items.shift(),
-              $itemView = $('<li>'),
-              itemController = itemControllerFactory.create($itemView, model);
+          $itemView = $('<li>');
+          model = event.items.shift();
+          itemController = itemControllerFactory.create($itemView, model);
 
           $itemView.appendTo(listController.$view);
+          rendererList.addItem(itemController);
           itemController.state = itemControllerFactory.state.EDITABLE;
           break;
         case EventKindEnum.REMOVE:
@@ -38,7 +53,7 @@ define(['jquery', 'script/controller/list-item-controller', 'script/collection/c
       }
     });
     
-  }($(collection)));
+  }($(collection), $(rendererList)));
 
   return listController;
   
