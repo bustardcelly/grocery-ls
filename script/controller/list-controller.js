@@ -22,6 +22,9 @@ define(['jquery', 'script/controller/list-item-controller', 'script/collection/c
           collection.addItem(model);
           return model;
         },
+        removeItem: function(item) {
+          return collection.removeItem(item);
+        },
         setView: function(view) {
           this.$view = (view instanceof $) ? view : $(view);
         }
@@ -47,6 +50,15 @@ define(['jquery', 'script/controller/list-item-controller', 'script/collection/c
           itemController.state = itemControllerFactory.state.EDITABLE;
           break;
         case EventKindEnum.REMOVE:
+          model = event.items.shift();
+          itemController = listController.getRendererFromItem(model);
+
+          if(itemController) {
+            $itemView = itemController.parentView;
+            $itemView.remove();
+            itemController.dispose();
+            rendererList.removeItem(itemController);
+          }
           break;
         case EventKindEnum.RESET:
           break;

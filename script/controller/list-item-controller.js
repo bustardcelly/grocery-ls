@@ -87,7 +87,6 @@ define(['jquery'], function($) {
           this.state = stateEnum.UNEDITABLE;
           return this;
         },
-        // NEW >
         dispose: function() {
           this.$uneditableView.off('click');
           $('input', this.$editableView).off('blur');
