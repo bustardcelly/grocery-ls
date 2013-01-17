@@ -3,7 +3,7 @@ define(['jquery', 'script/controller/list-controller', 'script/model/grocery-ls-
   
   describe('Grocery List list-controller', function() {
 
-    describe('getRendererItem()', function() {
+    describe('getRendererFromItem()', function() {
 
       it('should return renderer associated with model', function() {
         var itemModel, renderer;
@@ -20,6 +20,19 @@ define(['jquery', 'script/controller/list-controller', 'script/model/grocery-ls-
         itemModel = modelFactory.create();
         renderer = listController.getRendererFromItem(itemModel);
         expect(renderer).toBeUndefined();
+      });
+
+    });
+
+    describe('list-item-controller remove event response', function() {
+
+      it('should invoke list-controller:removeItem()', function() {
+        var newItem = listController.createNewItem(),
+            itemRenderer = listController.getRendererFromItem(newItem);
+
+        spyOn(listController, 'removeItem');
+        $(itemRenderer).trigger('remove');
+        expect(listController.removeItem).toHaveBeenCalledWith(newItem);
       });
 
     });

@@ -31,9 +31,9 @@
           }
         });
 
-        require( ['spec/feature/additem.spec.js', 'spec/feature/markitem.spec.js', 'spec/feature/removeitem.spec.js',
-                  'spec/list-controller.spec.js', 'spec/list-item-controller.spec.js', 'spec/grocery-ls-item.spec.js', 
-                  'spec/collection.spec.js'], function() {
+        require( ['spec/feature/additem.spec', 'spec/feature/markitem.spec', 'spec/feature/removeitem.spec',
+                  'spec/list-controller.spec', 'spec/list-item-controller.spec', 'spec/grocery-ls-item.spec', 
+                  'spec/collection.spec'], function() {
           
           var jasmineEnv = jasmine.getEnv(),
               htmlReporter = new jasmine.HtmlReporter();

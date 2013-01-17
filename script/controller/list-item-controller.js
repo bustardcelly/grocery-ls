@@ -7,15 +7,22 @@ define(['jquery'], function($) {
     return event;
   }
 
+  function createRemoveEvent(controller) {
+    var event = $.Event('remove');
+    event.controller = controller;
+    return event;
+  }
+
   function handlePropertyChange(controller, event) {
     if(event.property === "name") {
       // update view based on model change.
       $('input', controller.$editableView).val(controller.model.name);
-      controller.$uneditableView.text(event.newValue);
+      $('span.grocery-item-label', controller.$uneditableView).text(event.newValue);
     }
     else if(event.property === "marked") {
       // update view based on model change.
-      controller.$uneditableView.css('text-decoration', ( event.newValue ) ? 'line-through' : 'none');
+      $('span.grocery-item-label', controller.$uneditableView)
+          .css('text-decoration', ( event.newValue ) ? 'line-through' : 'none');
     }
   }
 
@@ -46,7 +53,10 @@ define(['jquery'], function($) {
         UNEDITABLE: 0,
         EDITABLE: 1
       },
-      uneditableItemFragment  = '<p class="grocery-item" />',
+      uneditableItemFragment  = '<p class="grocery-item">' +
+                                  '<span class="grocery-item-label" />' +
+                                  '<button class="delete-item-button">delete</button>' + 
+                                '</p>',
       editableItemFragment    = '<p class="editable-grocery-item">' +
                                   '<input name="editableItem" ' +
                                     'class="editable-item" placeholder="Enter item name...">' + 
@@ -60,10 +70,15 @@ define(['jquery'], function($) {
           this.$uneditableView = $(uneditableItemFragment);
 
           // view handlers.
-          this.$uneditableView.on('click', (function(controller) {
+          $('span.grocery-item-label', this.$uneditableView).on('click', (function(controller) {
             return function(event) {
               var toggled = controller.$uneditableView.css('text-decoration') === 'line-through';
               controller.model.marked = !toggled;
+            };
+          }(this)));
+          $('button.delete-item-button', this.$uneditableView).on('click', (function(controller) {
+            return function(event) {
+              $(controller).trigger(createRemoveEvent(controller));
             };
           }(this)));
           $('input', this.$editableView).on('blur', (function(controller) {

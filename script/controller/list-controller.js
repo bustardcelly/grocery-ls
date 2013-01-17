@@ -14,8 +14,8 @@ define(['jquery', 'script/controller/list-item-controller', 'script/collection/c
             if(rendererList.getItemAt(i).model === item) {
               return rendererList.getItemAt(i);
             }
-            return undefined;
           }
+          return undefined;
         },
         createNewItem: function() {
           var model = modelFactory.create();
@@ -48,6 +48,9 @@ define(['jquery', 'script/controller/list-item-controller', 'script/collection/c
           $itemView.appendTo(listController.$view);
           rendererList.addItem(itemController);
           itemController.state = itemControllerFactory.state.EDITABLE;
+          $(itemController).on('remove', function(event) {
+            listController.removeItem(model);
+          });
           break;
         case EventKindEnum.REMOVE:
           model = event.items.shift();
@@ -57,6 +60,7 @@ define(['jquery', 'script/controller/list-item-controller', 'script/collection/c
             $itemView = itemController.parentView;
             $itemView.remove();
             itemController.dispose();
+            $(itemController).off('remove');
             rendererList.removeItem(itemController);
           }
           break;
