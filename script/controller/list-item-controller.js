@@ -13,6 +13,12 @@ define(['jquery'], function($) {
     return event;
   }
 
+  function createSaveEvent(controller) {
+    var event = $.Event('commit');
+    event.controller = controller;
+    return event;
+  }
+
   function handlePropertyChange(controller, event) {
     if(event.property === "name") {
       // update view based on model change.
@@ -39,6 +45,7 @@ define(['jquery'], function($) {
     // append state-based item.
     if(event.newState === stateEnum.UNEDITABLE) {
       controller.parentView.append(controller.$uneditableView);
+      controller.save();
     }
     else if(event.newState === stateEnum.EDITABLE) {
       var inputTimeout = setTimeout( function()  {
@@ -101,6 +108,9 @@ define(['jquery'], function($) {
           // default to undeditable state.
           this.state = stateEnum.UNEDITABLE;
           return this;
+        },
+        save: function() {
+          $(this).trigger(createSaveEvent(this));
         },
         dispose: function() {
           this.$uneditableView.off('click');

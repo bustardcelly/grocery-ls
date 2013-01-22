@@ -38,29 +38,40 @@ define(['jquery', 'script/controller/list-item-controller', 'script/collection/c
         };
 
     $collection.on('collection-change', function(event) {
-      var model, itemController, $itemView;
+      var model, 
+          itemController, 
+          $itemController,
+          $itemView;
       switch( event.kind ) {
         case EventKindEnum.ADD:
           $itemView = $('<li>');
           model = event.items.shift();
           itemController = itemControllerFactory.create($itemView, model);
+          $itemController = $(itemController);
 
           $itemView.appendTo(listController.$view);
           rendererList.addItem(itemController);
           itemController.state = itemControllerFactory.state.EDITABLE;
-          $(itemController).on('remove', function(event) {
+          $itemController.on('remove', function(event) {
             listController.removeItem(model);
+          });
+          $itemController.on('commit', function(event) {
+            if(!isValidValue(model.name)) {
+              listController.removeItem(model);
+            }
           });
           break;
         case EventKindEnum.REMOVE:
           model = event.items.shift();
           itemController = listController.getRendererFromItem(model);
-
+          $itemController = $(itemController);
+          
           if(itemController) {
             $itemView = itemController.parentView;
             $itemView.remove();
             itemController.dispose();
-            $(itemController).off('remove');
+            $itemController.off('remove');
+            $itemController.off('commit');
             rendererList.removeItem(itemController);
           }
           break;
