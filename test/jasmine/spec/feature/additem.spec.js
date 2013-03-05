@@ -3,7 +3,8 @@ define(['jquery', 'script/controller/list-controller', 'script/controller/list-i
   
   describe('New item creation from listController.createNewItem()', function() {
 
-    var $listView = $('<ul/>');
+    var $listView = $('<ul/>'),
+        async = new AsyncSpec(this);
 
     beforeEach( function() {
       listController.setView($listView);
@@ -38,6 +39,17 @@ define(['jquery', 'script/controller/list-controller', 'script/controller/list-i
         expect(itemRenderer.model).toBe(newItem);
         expect(itemRenderer.state).toEqual(itemControllerFactory.state.EDITABLE);
         expect($listView.children()[0]).toBe(itemRenderer.parentView.get(0));
+    });
+
+    async.it('should dispatch a save-item event', function(done) {
+      var newItem;
+
+      $(listController).on('save-item', function(event) {
+        expect(event.item).not.toBeUndefined();
+        $(listController).off('save-item');
+        done();
+      });
+      newItem = listController.createNewItem();
     });
 
     afterEach( function() {

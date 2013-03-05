@@ -76,6 +76,18 @@ define(['jquery', 'script/controller/list-controller', 'script/controller/list-i
       itemRenderer.state = itemControllerFactory.state.UNEDITABLE;
     });
 
+    async.it('should dispatch a save-item event', function(done) {
+      
+      $(listController).on('save-item', function(event) {
+        expect(event.item).toEqual(item);
+        $(listController).off('save-item');
+        done();
+      });
+
+      item.name = itemName;
+      itemRenderer.state = itemControllerFactory.state.UNEDITABLE;
+    });
+
     afterEach( function() {
       item = undefined;
       itemRenderer = undefined;

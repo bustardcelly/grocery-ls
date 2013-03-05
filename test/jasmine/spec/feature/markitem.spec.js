@@ -3,10 +3,12 @@ define(['jquery', 'script/controller/list-controller'],
   
   describe('Existing item is marked-off', function() {
 
-    var item;
+    var item,
+        async = new AsyncSpec(this);
 
     beforeEach( function() {
       item = listController.createNewItem();
+      item.name = 'apples';
     });
 
     it('should denote item as being in possession', function() {
@@ -38,6 +40,22 @@ define(['jquery', 'script/controller/list-controller'],
       // ensure that marking and unmarking retauns item in list and has proper value.
       expect(itemRenderer.model.marked).toEqual(false);
       expect(listController.getItemList().getItemIndex(item)).toEqual(itemIndex);
+    });
+
+    async.it('should dispatch a save-item event', function(done) {
+
+      var timeout = setTimeout(function() {
+        clearTimeout(timeout);
+        $(listController).off('save-item');
+      }, jasmine.DEFAULT_TIMEOUT_INTERNAL);
+
+      $(listController).on('save-item', function(event) {
+        expect(event.item).toBe(item);
+        $(listController).off('save-item');  
+        done();
+      });
+
+      item.marked = true;
     });
 
     afterEach( function() {

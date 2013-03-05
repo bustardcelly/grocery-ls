@@ -45,7 +45,6 @@ define(['jquery'], function($) {
     // append state-based item.
     if(event.newState === stateEnum.UNEDITABLE) {
       controller.parentView.append(controller.$uneditableView);
-      controller.save();
     }
     else if(event.newState === stateEnum.EDITABLE) {
       var inputTimeout = setTimeout( function()  {
@@ -103,6 +102,7 @@ define(['jquery'], function($) {
           $(this.model).on('property-change', (function(controller) {
             return function(event) {
               handlePropertyChange.call(null, controller, event);
+              controller.save();
             };
           }(this)));
           // default to undeditable state.

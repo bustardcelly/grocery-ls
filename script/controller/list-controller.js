@@ -1,6 +1,18 @@
 define(['jquery', 'script/controller/list-item-controller', 'script/collection/collection', 'script/model/grocery-ls-item'], 
         function($, itemControllerFactory, collectionFactory, modelFactory) {
 
+  function createSaveEvent(item) {
+    var event = $.Event('save-item');
+    event.item = item;
+    return event;
+  }
+
+  function createRemoveEvent(item) {
+    var event = $.Event('remove-item');
+    event.item = item;
+    return event;
+  }
+
   var collection = collectionFactory.create(),
       rendererList = collectionFactory.create(),
       listController = {
@@ -51,6 +63,7 @@ define(['jquery', 'script/controller/list-item-controller', 'script/collection/c
 
           $itemView.appendTo(listController.$view);
           rendererList.addItem(itemController);
+          $(listController).trigger(createSaveEvent(model));
           itemController.state = itemControllerFactory.state.EDITABLE;
           $itemController.on('remove', function(event) {
             listController.removeItem(model);
@@ -58,6 +71,9 @@ define(['jquery', 'script/controller/list-item-controller', 'script/collection/c
           $itemController.on('commit', function(event) {
             if(!isValidValue(model.name)) {
               listController.removeItem(model);
+            }
+            else {
+              $(listController).trigger(createSaveEvent(model));
             }
           });
           break;
@@ -73,6 +89,7 @@ define(['jquery', 'script/controller/list-item-controller', 'script/collection/c
             $itemController.off('remove');
             $itemController.off('commit');
             rendererList.removeItem(itemController);
+            $(listController).trigger(createRemoveEvent(model));
           }
           break;
         case EventKindEnum.RESET:

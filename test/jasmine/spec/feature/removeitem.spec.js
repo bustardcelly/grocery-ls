@@ -3,7 +3,8 @@ define(['jquery', 'script/controller/list-controller'], function($, listControll
   describe('Remove item', function() {
 
     var $listView = $('<ul/>'),
-        groceryItem;
+        groceryItem,
+        async = new AsyncSpec(this);
 
     beforeEach( function() {
       listController.setView($listView);
@@ -24,6 +25,17 @@ define(['jquery', 'script/controller/list-controller'], function($, listControll
       listController.removeItem(groceryItem);
       
       expect($listView.children().length).toEqual(0);
+    });
+
+    async.it('should dispatch a remove-item event', function(done) {
+      var removedItem;
+
+      $(listController).on('remove-item', function(event) {
+        expect(event.item).not.toBeUndefined();
+        $(listController).off('remove-item');
+        done();
+      });
+      removedItem = listController.removeItem(groceryItem);
     });
 
     afterEach( function() {
