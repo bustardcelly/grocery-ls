@@ -15,6 +15,64 @@ define(['jquery', 'script/controller/list-item-controller', 'script/collection/c
 
   var collection = collectionFactory.create(),
       rendererList = collectionFactory.create(),
+      assignCollectionHandlers = function($collection) {
+        var EventKindEnum = collectionFactory.collectionEventKind;
+        $collection.on('collection-change', function(event) {
+          var model, 
+              itemController, 
+              $itemController,
+              $itemView;
+          switch( event.kind ) {
+            case EventKindEnum.ADD:
+              model = event.items.shift();
+              itemController = manageItemInList(model, listController);
+              itemController.state = itemControllerFactory.state.EDITABLE;
+              $(listController).trigger(createSaveEvent(model));
+              break;
+            case EventKindEnum.REMOVE:
+              model = event.items.shift();
+              itemController = listController.getRendererFromItem(model),
+              $itemController = $(itemController);
+
+              if(itemController) {
+                $itemView = itemController.parentView;
+                $itemView.remove();
+                itemController.dispose();
+                $itemController.off('remove');
+                $itemController.off('commit');
+                rendererList.removeItem(itemController);
+                $(listController).trigger(createRemoveEvent(model));
+              }
+              break;
+            case EventKindEnum.RESET:
+              break;
+          }
+        });
+      },
+      manageItemInList = function(item, listController) {
+        var $itemView = $('<li>'),
+            itemController = itemControllerFactory.create($itemView, item),
+            $itemController = $(itemController),
+            isValidValue = function(value) {
+              return value && (value.hasOwnProperty('length') && value.length > 0);
+            };
+
+        $itemView.appendTo(listController.$view);
+        rendererList.addItem(itemController);
+        
+        $itemController.on('remove', function(event) {
+          listController.removeItem(item);
+        });
+        $itemController.on('commit', function(event) {
+          if(!isValidValue(item.name)) {
+            listController.removeItem(item);
+          }
+          else {
+            $(listController).trigger(createSaveEvent(item));
+          }
+        });
+        return itemController;
+      },
       listController = {
         $view: undefined,
         getItemList: function() {
@@ -39,66 +97,20 @@ define(['jquery', 'script/controller/list-item-controller', 'script/collection/c
         },
         setView: function(view) {
           this.$view = (view instanceof $) ? view : $(view);
+        },
+        setItems: function(items) {
+          var i, length = items.length;
+          collection = collectionFactory.create();
+          for( i = 0; i < length; i++ ) {
+            manageItemInList(items[i], this);
+            collection.addItem(items[i]);
+          }
+          assignCollectionHandlers($(collection));
         }
       };
 
-  (function assignCollectionHandlers($collection, $rendererList) {
-
-    var EventKindEnum = collectionFactory.collectionEventKind,
-        isValidValue = function(value) {
-          return value && (value.hasOwnProperty('length') && value.length > 0);
-        };
-
-    $collection.on('collection-change', function(event) {
-      var model, 
-          itemController, 
-          $itemController,
-          $itemView;
-      switch( event.kind ) {
-        case EventKindEnum.ADD:
-          $itemView = $('<li>');
-          model = event.items.shift();
-          itemController = itemControllerFactory.create($itemView, model);
-          $itemController = $(itemController);
-
-          $itemView.appendTo(listController.$view);
-          rendererList.addItem(itemController);
-          $(listController).trigger(createSaveEvent(model));
-          itemController.state = itemControllerFactory.state.EDITABLE;
-          $itemController.on('remove', function(event) {
-            listController.removeItem(model);
-          });
-          $itemController.on('commit', function(event) {
-            if(!isValidValue(model.name)) {
-              listController.removeItem(model);
-            }
-            else {
-              $(listController).trigger(createSaveEvent(model));
-            }
-          });
-          break;
-        case EventKindEnum.REMOVE:
-          model = event.items.shift();
-          itemController = listController.getRendererFromItem(model);
-          $itemController = $(itemController);
-          
-          if(itemController) {
-            $itemView = itemController.parentView;
-            $itemView.remove();
-            itemController.dispose();
-            $itemController.off('remove');
-            $itemController.off('commit');
-            rendererList.removeItem(itemController);
-            $(listController).trigger(createRemoveEvent(model));
-          }
-          break;
-        case EventKindEnum.RESET:
-          break;
-      }
-    });
-    
-  }($(collection), $(rendererList)));
-
+  assignCollectionHandlers($(collection));
+  
   return listController;
   
 });

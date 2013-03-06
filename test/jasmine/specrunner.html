@@ -31,11 +31,10 @@
           }
         });
 
-        // require( ['spec/feature/additem.spec', 'spec/feature/markitem.spec', 'spec/feature/removeitem.spec',
-        //           'spec/feature/saveitem.spec',
-        //           'spec/list-controller.spec', 'spec/list-item-controller.spec', 'spec/grocery-ls-item.spec',
-        //           'spec/collection.spec'], function() {
-        require( ['spec/storage-service.spec'], function() {
+        require( ['spec/feature/additem.spec', 'spec/feature/markitem.spec', 'spec/feature/removeitem.spec',
+                  'spec/feature/saveitem.spec',
+                  'spec/list-controller.spec', 'spec/list-item-controller.spec', 'spec/grocery-ls-item.spec',
+                  'spec/collection.spec', 'spec/storage-service.spec'], function() {
           
           var jasmineEnv = jasmine.getEnv(),
               htmlReporter = new jasmine.HtmlReporter();
