@@ -18,7 +18,7 @@ define(['jquery'], function($) {
         Object.defineProperties(item, {
           "id": {
             value: id,
-            writable: false,
+            writable: true,
             enumerable: true
           },
           "name": {

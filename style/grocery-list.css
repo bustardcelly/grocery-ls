@@ -1,13 +1,36 @@
+body {
+  font-family: Helvetica, Arial, sans-serif;
+}
+
+header h1 {
+  display: inline-block;
+  margin-right: 1em;
+}
+
 .grocery-list {
   margin: 0;
-  padding: 0 0 0 1em;
+  padding: 0 0 1em 0;
   list-style: none;
 }
 
 .grocery-list li {
-  margin: 0;
+  padding: 0.5em 1em;
 }
 
 .grocery-item-label {
   margin: 0.5em 2em 0.5em 0em;
 }
+
+.grocery-list li:nth-child(odd) {
+  background-color: #EEEEEE;
+}
+
+.grocery-list li:nth-child(even) {
+  background-color: #DDDDDD;
+}
+
+@media all and (max-width: 480px) {
+  .delete-item-button {
+    float: right;
+  }
+} 

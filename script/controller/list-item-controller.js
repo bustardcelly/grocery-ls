@@ -72,13 +72,16 @@ define(['jquery'], function($) {
         $editableView: undefined,
         $uneditableView: undefined,
         init: function() {
+          var $uneditableLabel;
+
           this.$editableView = $(editableItemFragment);
           this.$uneditableView = $(uneditableItemFragment);
+          $uneditableLabel = $('span.grocery-item-label',  this.$uneditableView);
 
           // view handlers.
-          $('span.grocery-item-label', this.$uneditableView).on('click', (function(controller) {
+          $uneditableLabel.on('click', (function(controller) {
             return function(event) {
-              var toggled = controller.$uneditableView.css('text-decoration') === 'line-through';
+              var toggled = $(this).css('text-decoration') === 'line-through';
               controller.model.marked = !toggled;
             };
           }(this)));
@@ -107,6 +110,8 @@ define(['jquery'], function($) {
           }(this)));
           // default to undeditable state.
           this.state = stateEnum.UNEDITABLE;
+          $uneditableLabel.text(this.model.name);
+          $uneditableLabel.css('text-decoration', (this.model.marked) ? 'line-through' : '');
           return this;
         },
         save: function() {
@@ -115,6 +120,8 @@ define(['jquery'], function($) {
         dispose: function() {
           this.$uneditableView.off('click');
           $('input', this.$editableView).off('blur');
+          $('span.grocery-item-label',  this.$uneditableView).off('click');
+          $('button.delete-item-button', this.$uneditableView).off('click');
           $(this).off('state-change');
           $(this.model).off('property-change');
         }

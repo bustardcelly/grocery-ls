@@ -7,6 +7,7 @@ define(['jquery', 'script/model/grocery-ls-item'], function($, modelFactory) {
             length,
             list = (json && typeof json === 'string') ? JSON.parse(json) : [];
 
+        length = list.length;
         for(i = 0; i < length; i++) {
           list[i] = $.extend(modelFactory.create(), list[i]);
         }

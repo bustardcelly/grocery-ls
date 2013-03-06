@@ -39,17 +39,6 @@ define(['jquery', 'script/model/grocery-ls-item'], function($, modelFactory) {
       
     });
 
-    describe('grocery-ls-item properties', function() {
-
-      it('should contain an immutable id property, created at instantiation', function() {
-        var newID = 1234567;
-        model.id = newID;
-
-        expect(model.id).not.toEqual(newID);
-      });
-
-    });
-
     describe('grocery-ls-item property change notification', function() {
 
       async.it('should notify with \'property-change\' upon change to name property', function(done) {
