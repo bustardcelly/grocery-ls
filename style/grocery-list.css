@@ -29,6 +29,25 @@ header h1 {
   background-color: #DDDDDD;
 }
 
+#add-item-button {
+  height: 36px;
+  font-size: 1.2em;
+}
+
+.delete-item-button {
+  height: 36px;
+  font-size: 1.2em;
+}
+
+.editable-grocery-item input {
+  height: 36px;
+  font-size: 1.2em;
+}
+
+.grocery-item-label {
+  font-size: 1.2em;
+}
+
 @media all and (max-width: 480px) {
   .delete-item-button {
     float: right;
