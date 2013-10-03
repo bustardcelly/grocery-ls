@@ -9,6 +9,7 @@
     <script src="lib/jasmine-1.2.0/jasmine-html.js"></script>
     <script src="lib/jasmine.async.min.js"></script>
     <script src="lib/jasmine.teamcity_reporter.js"></script>
+    <script src="lib/jasmine.terminal_reporter.js"></script>
     <script src="lib/sinon-1.5.0.js"></script>
     
     <script>
@@ -42,6 +43,7 @@
               
           jasmineEnv.updateInterval = 1000;
           jasmineEnv.addReporter(new jasmine.TeamcityReporter());
+          jasmineEnv.addReporter(new jasmine.TerminalReporter());
           jasmineEnv.addReporter(htmlReporter);
           jasmineEnv.execute();
 
